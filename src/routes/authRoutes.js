@@ -20,4 +20,4 @@ router.post('/login', loginValidation, validate, login);
 router.put('/update-password', verifyToken, updatePasswordValidation, validate, updatePassword);
 router.delete('/delete-user', verifyToken, deleteUserValidation, validate, deleteUser);
 
-module.exports = router;  // Ensure this is present
+module.exports = router;

@@ -5,7 +5,12 @@ const { AppError } = require('../utils/errorHandler');
 
 const register = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, username } = req.body;
+
+    if (!username) {
+      // You can generate a username from the email or create a default one
+      username = email.split('@')[0]; // Example: username from the email before the '@'
+    }
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -17,7 +22,8 @@ const register = async (req, res, next) => {
 
     const user = new User({
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      username // Make sure the username is saved properly
     });
 
     await user.save();
@@ -32,7 +38,7 @@ const register = async (req, res, next) => {
       status: 'success',
       message: 'User created successfully',
       data: {
-        user: { email: user.email },
+        user: { email: user.email, username: user.username },
         token
       }
     });

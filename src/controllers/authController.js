@@ -1,15 +1,42 @@
+const nodemailer = require('nodemailer');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { AppError } = require('../utils/errorHandler');
 
+// הגדרת Nodemailer לשליחת אימיילים
+const transporter = nodemailer.createTransport({
+  service: 'gmail', // אפשר להחליף לשירות אימייל אחר אם תרצה
+  auth: {
+    user: process.env.EMAIL_USER, // כתובת האימייל שלך
+    pass: process.env.EMAIL_PASS, // הסיסמא שלך (מומלץ להשתמש ב-OAuth2 לצורך אבטחה טובה יותר)
+  }
+});
+
+// פונקציה לשליחת אימייל אחרי התחברות
+const sendLoginEmail = async (email, username) => {
+  try {
+    const mailOptions = {
+      from: process.env.EMAIL_USER, // כתובת המייל ממנה נשלח ההודעה
+      to: email, // כתובת המייל של המשתמש
+      subject: 'Login Notification', // נושא ההודעה
+      text: `Hello ${username},\n\nYou have successfully logged into your account.`, // תוכן ההודעה
+    };
+
+    await transporter.sendMail(mailOptions); // שליחת האימייל
+  } catch (error) {
+    console.error('Error sending email:', error); // אם יש שגיאה במהלך שליחת האימייל
+  }
+};
+
+// פונקציית רישום משתמש
 const register = async (req, res, next) => {
   try {
     const { email, password, username } = req.body;
 
     if (!username) {
-      // You can generate a username from the email or create a default one
-      username = email.split('@')[0]; // Example: username from the email before the '@'
+      // ניתן לייצר שם משתמש מתוך האימייל או ליצור אחד ברירת מחדל
+      username = email.split('@')[0]; // לדוגמה: שם משתמש מתוך האימייל לפני ה- '@'
     }
 
     const existingUser = await User.findOne({ email });
@@ -23,7 +50,7 @@ const register = async (req, res, next) => {
     const user = new User({
       email,
       password: hashedPassword,
-      username // Make sure the username is saved properly
+      username
     });
 
     await user.save();
@@ -47,6 +74,7 @@ const register = async (req, res, next) => {
   }
 };
 
+// פונקציית התחברות
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -60,6 +88,9 @@ const login = async (req, res, next) => {
     if (!validPassword) {
       throw new AppError('Invalid credentials', 401);
     }
+
+    // שליחת אימייל לאחר התחברות מוצלחת
+    await sendLoginEmail(user.email, user.username);
 
     const token = jwt.sign(
       { userId: user._id },
@@ -80,6 +111,7 @@ const login = async (req, res, next) => {
   }
 };
 
+// פונקציית עדכון סיסמא
 const updatePassword = async (req, res, next) => {
   try {
     const { email, oldPassword, newPassword } = req.body;
@@ -109,6 +141,7 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
+// פונקציית מחיקת משתמש
 const deleteUser = async (req, res, next) => {
   try {
     const { email } = req.body;

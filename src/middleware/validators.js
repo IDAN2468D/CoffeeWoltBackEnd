@@ -1,4 +1,5 @@
 const { body, validationResult } = require('express-validator');
+const User = require('../models/User'); // Assuming the path to the User model
 
 const registerValidation = [
   body('email')
@@ -7,7 +8,14 @@ const registerValidation = [
     .withMessage('Invalid email format')
     .not()
     .isEmpty()
-    .withMessage('Email is required'),
+    .withMessage('Email is required')
+    .custom(async (value) => {
+      const existingUser = await User.findOne({ email: value });
+      if (existingUser) {
+        throw new Error('Email is already in use');
+      }
+      return true;
+    }),
 
   body('password')
     .isLength({ min: 6 })

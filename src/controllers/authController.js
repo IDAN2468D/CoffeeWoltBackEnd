@@ -6,10 +6,10 @@ const { AppError } = require('../utils/errorHandler');
 
 // הגדרת Nodemailer לשליחת אימיילים
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // אפשר להחליף לשירות אימייל אחר אם תרצה
+  service: 'gmail', 
   auth: {
-    user: process.env.EMAIL_USER, // כתובת האימייל שלך
-    pass: process.env.EMAIL_PASS, // הסיסמא שלך (מומלץ להשתמש ב-OAuth2 לצורך אבטחה טובה יותר)
+    user: process.env.EMAIL_USER, 
+    pass: process.env.EMAIL_PASS,
   }
 });
 
@@ -17,15 +17,15 @@ const transporter = nodemailer.createTransport({
 const sendLoginEmail = async (email, username) => {
   try {
     const mailOptions = {
-      from: process.env.EMAIL_USER, // כתובת המייל ממנה נשלח ההודעה
-      to: email, // כתובת המייל של המשתמש
-      subject: 'Login Notification', // נושא ההודעה
-      text: `Hello ${email},\n\nYou have successfully logged into your account.`, // תוכן ההודעה
+      from: process.env.EMAIL_USER, 
+      to: email, 
+      subject: 'Login Notification', 
+      text: `Hello ${email},\n\nYou have successfully logged into your account.`, 
     };
 
-    await transporter.sendMail(mailOptions); // שליחת האימייל
+    await transporter.sendMail(mailOptions); 
   } catch (error) {
-    console.error('Error sending email:', error); // אם יש שגיאה במהלך שליחת האימייל
+    console.error('Error sending email:', error); 
   }
 };
 
@@ -35,8 +35,7 @@ const register = async (req, res, next) => {
     const { email, password, username } = req.body;
 
     if (!username) {
-      // ניתן לייצר שם משתמש מתוך האימייל או ליצור אחד ברירת מחדל
-      username = email.split('@')[0]; // לדוגמה: שם משתמש מתוך האימייל לפני ה- '@'
+      username = email.split('@')[0]; 
     }
 
     const existingUser = await User.findOne({ email });

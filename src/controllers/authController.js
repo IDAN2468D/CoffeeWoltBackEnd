@@ -5,18 +5,18 @@ const { AppError } = require('../utils/errorHandler');
 
 const register = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const existingUser = await User.findOne({ username });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
-      throw new AppError('Username already exists', 400);
+      throw new AppError('Email already exists', 400);
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = new User({
-      username,
+      email,
       password: hashedPassword
     });
 
@@ -25,14 +25,14 @@ const register = async (req, res, next) => {
     const token = jwt.sign(
       { userId: user._id },
       process.env.JWT_SECRET,
-      { expiresIn: '24h' }
+      { expiresIn: '7d' }
     );
 
     res.status(201).json({
       status: 'success',
       message: 'User created successfully',
       data: {
-        user: { username: user.username },
+        user: { email: user.email },
         token
       }
     });
@@ -43,9 +43,9 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       throw new AppError('Invalid credentials', 401);
     }
@@ -65,7 +65,7 @@ const login = async (req, res, next) => {
       status: 'success',
       message: 'Logged in successfully',
       data: {
-        user: { username: user.username },
+        user: { email: user.email },
         token
       }
     });
@@ -76,9 +76,9 @@ const login = async (req, res, next) => {
 
 const updatePassword = async (req, res, next) => {
   try {
-    const { username, oldPassword, newPassword } = req.body;
+    const { email, oldPassword, newPassword } = req.body;
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ email });
     if (!user) {
       throw new AppError('User not found', 404);
     }
@@ -105,9 +105,9 @@ const updatePassword = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    const { username } = req.body;
+    const { email } = req.body;
 
-    const deletedUser = await User.findOneAndDelete({ username });
+    const deletedUser = await User.findOneAndDelete({ email });
     if (!deletedUser) {
       throw new AppError('User not found', 404);
     }

@@ -1,16 +1,14 @@
 const { body, validationResult } = require('express-validator');
 
 const registerValidation = [
-  body('username')
+  body('email')
     .trim()
-    .isLength({ min: 3 })
-    .withMessage('Username must be at least 3 characters long')
-    .matches(/^[a-zA-Z0-9_]+$/)
-    .withMessage('Username can only contain letters, numbers and underscores')
+    .isEmail()
+    .withMessage('Invalid email format')
     .not()
     .isEmpty()
-    .withMessage('Username is required'),
-    
+    .withMessage('Email is required'),
+
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters long')
@@ -19,13 +17,34 @@ const registerValidation = [
 ];
 
 const loginValidation = [
-  body('username').trim().not().isEmpty().withMessage('Username is required'),
-  body('password').not().isEmpty().withMessage('Password is required')
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Invalid email format')
+    .not()
+    .isEmpty()
+    .withMessage('Email is required'),
+
+  body('password')
+    .not()
+    .isEmpty()
+    .withMessage('Password is required')
 ];
 
 const updatePasswordValidation = [
-  body('username').trim().not().isEmpty().withMessage('Username is required'),
-  body('oldPassword').not().isEmpty().withMessage('Old password is required'),
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Invalid email format')
+    .not()
+    .isEmpty()
+    .withMessage('Email is required'),
+
+  body('oldPassword')
+    .not()
+    .isEmpty()
+    .withMessage('Old password is required'),
+
   body('newPassword')
     .isLength({ min: 6 })
     .withMessage('New password must be at least 6 characters long')
@@ -40,7 +59,13 @@ const updatePasswordValidation = [
 ];
 
 const deleteUserValidation = [
-  body('username').trim().not().isEmpty().withMessage('Username is required')
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Invalid email format')
+    .not()
+    .isEmpty()
+    .withMessage('Email is required')
 ];
 
 const validate = (req, res, next) => {

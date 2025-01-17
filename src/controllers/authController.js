@@ -20,7 +20,7 @@ const sendLoginEmail = async (email, username) => {
       from: process.env.EMAIL_USER, // כתובת המייל ממנה נשלח ההודעה
       to: email, // כתובת המייל של המשתמש
       subject: 'Login Notification', // נושא ההודעה
-      text: `Hello ${username},\n\nYou have successfully logged into your account.`, // תוכן ההודעה
+      text: `Hello ${email},\n\nYou have successfully logged into your account.`, // תוכן ההודעה
     };
 
     await transporter.sendMail(mailOptions); // שליחת האימייל
@@ -90,7 +90,7 @@ const login = async (req, res, next) => {
     }
 
     // שליחת אימייל לאחר התחברות מוצלחת
-    await sendLoginEmail(user.email, user.username);
+    await sendLoginEmail(user.email);
 
     const token = jwt.sign(
       { userId: user._id },

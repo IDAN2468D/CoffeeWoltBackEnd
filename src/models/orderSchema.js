@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     type: [String], // רשימה של פריטים בעגלה
     required: true,
   },
-  CartListPrice: {
+  CartListPrice: {  // שינוי מה שקרוי CartListProps ל- CartListPrice
     type: Number, // המחיר הכולל של העגלה
     required: true,
   },

@@ -11,6 +11,10 @@ router.post('/', async (req, res) => {
         return res.status(400).json({ message: 'No orders provided' });
       }
   
+      if (!orders.every(order => order.CartList && order.CartListPrice)) {
+        return res.status(400).json({ message: 'Missing required fields in orders' });
+      }
+      
       // ניהול הוספת הזמנות למסד הנתונים
       const addedOrders = await Order.insertMany(orders);
       

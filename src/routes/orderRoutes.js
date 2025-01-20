@@ -1,3 +1,8 @@
+const express = require("express");
+const Order = require("../models/orderSchema");
+const router = express.Router();
+
+// מסלול ה-POST לקבלת הזמנות
 router.post('/', async (req, res) => {
     try {
       const orders = req.body.orders; // קבלת רשימת הזמנות מהבקשה
@@ -24,3 +29,4 @@ router.post('/', async (req, res) => {
     }
   });
   
+module.exports = router;

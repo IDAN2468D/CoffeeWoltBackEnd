@@ -1,11 +1,11 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose"); // ייבוא Mongoose
 
 const orderSchema = new mongoose.Schema({
   CartList: {
-    type: [String], // רשימה של פריטים בעגלה
+    type: [Object], // רשימה של פריטים בעגלה
     required: true,
   },
-  CartListPrice: {  // שינוי מה שקרוי CartListProps ל- CartListPrice
+  CartListPrice: {
     type: Number, // המחיר הכולל של העגלה
     required: true,
   },
@@ -15,6 +15,7 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
+// יצירת מודל המבוסס על הסכמה
 const Order = mongoose.model("Order", orderSchema);
 
-module.exports = Order;
+module.exports = Order; // ייצוא המודל לשימוש בקבצים אחרים

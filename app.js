@@ -3,6 +3,7 @@ const cors = require('cors');
 const { handleError } = require('./src/utils/errorHandler.js');
 require('dotenv').config();
 
+const orderRoutes = require("./src/routes/orderRoutes");
 const authRoutes = require('./src/routes/authRoutes'); 
 const coffeeRoutes = require('./src/routes/coffeeRoutes');
 const coffeeBean = require("./src/routes/beanRoutes");
@@ -15,6 +16,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+app.use('/api/order-history', orderRoutes);
 app.use('/api/auth', authRoutes);
 app.use("/api/coffee", coffeeRoutes);
 app.use("/api/bean", coffeeBean);

@@ -16,18 +16,18 @@ router.post('/', async (req, res) => {
                 throw new Error(`Invalid date format for OrderDate: ${order.OrderDate}`);
             }
 
+            // טיפול בפריטים חסרים
+            const fixedCartList = order.CartList.map(item => {
+                if (!item.id) item.id = "default-id";
+                if (!item.index) item.index = 0;
+                if (!item.name) item.name = "Unnamed Item";
+                if (!item.ItemPrice) item.ItemPrice = "0.00";
+
+                return item;
+            });
+
             return {
-                CartList: order.CartList.map(item => ({
-                    id: item.id,
-                    index: item.index,
-                    name: item.name,
-                    roasted: item.roasted,
-                    imagelink_square: item.imagelink_square,
-                    special_ingredient: item.special_ingredient,
-                    type: item.type,
-                    prices: item.prices,
-                    ItemPrice: item.ItemPrice,
-                })),
+                CartList: fixedCartList,
                 CartListPrice: order.CartListPrice,
                 OrderDate: formattedDate, // שימוש בתאריך המפורמט
             };

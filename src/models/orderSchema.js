@@ -1,4 +1,4 @@
-const mongoose = require("mongoose"); // ייבוא Mongoose
+const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
   CartList: {
@@ -15,7 +15,6 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-// יצירת מודל המבוסס על הסכמה
 const Order = mongoose.model("Order", orderSchema);
 
-module.exports = Order; // ייצוא המודל לשימוש בקבצים אחרים
+module.exports = Order;

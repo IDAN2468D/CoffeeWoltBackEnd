@@ -5,32 +5,35 @@ const router = express.Router();
 // מסלול ה-POST לקבלת הזמנות
 router.post('/', async (req, res) => {
     try {
-      const orders = req.body.orders; // קבלת רשימת הזמנות מהבקשה
-  
-      if (!orders || orders.length === 0) {
-        return res.status(400).json({ message: 'No orders provided' });
-      }
-  
-      if (!orders.every(order => order.CartList && order.CartListPrice)) {
-        return res.status(400).json({ message: 'Missing required fields in orders' });
-      }
-      
-      // ניהול הוספת הזמנות למסד הנתונים
-      const addedOrders = await Order.insertMany(orders);
-      
-      // אם לא הצלחנו להוסיף את ההזמנות
-      if (!addedOrders || addedOrders.length === 0) {
-        return res.status(500).json({ message: 'Failed to add order history' });
-      }
-  
-      res.status(201).json({
-        message: 'Order history added successfully',
-        data: addedOrders,
-      });
+        const orders = req.body.orders; // קבלת רשימת הזמנות מהבקשה
+
+        // בדיקת אם יש הזמנות
+        if (!orders || orders.length === 0) {
+            return res.status(400).json({ message: 'No orders provided' });
+        }
+
+        // בדיקת אם כל ההזמנות כוללות את השדות הנדרשים
+        if (!orders.every(order => order.CartList && order.CartListPrice)) {
+            console.log('Missing required fields in some orders:', orders);
+            return res.status(400).json({ message: 'Missing required fields in orders' });
+        }
+
+        // ניהול הוספת הזמנות למסד הנתונים
+        const addedOrders = await Order.insertMany(orders);
+
+        // אם לא הצלחנו להוסיף את ההזמנות
+        if (!addedOrders || addedOrders.length === 0) {
+            return res.status(500).json({ message: 'Failed to add order history' });
+        }
+
+        res.status(201).json({
+            message: 'Order history added successfully',
+            data: addedOrders,
+        });
     } catch (error) {
-      console.error('Error adding order history:', error);
-      res.status(500).json({ message: 'Failed to add order history' });
+        console.error('Error adding order history:', error);
+        res.status(500).json({ message: 'Failed to add order history' });
     }
-  });
-  
+});
+
 module.exports = router;

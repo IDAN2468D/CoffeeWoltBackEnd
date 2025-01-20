@@ -19,10 +19,14 @@ router.post('/', async (req, res) => {
       // המרת CartListPrice אם יש צורך
       orders.forEach(order => {
         if (typeof order.CartListPrice === 'string') {
-          order.CartListPrice = parseFloat(order.CartListPrice); // המרת CartListPrice ממחרוזת למספר
+            const price = parseFloat(order.CartListPrice);
+            if (isNaN(price)) {
+                throw new Error(`Invalid CartListPrice: ${order.CartListPrice}`);
+            }
+            order.CartListPrice = price;
         }
-      });
-  
+    });
+      
       // ניהול הוספת הזמנות למסד הנתונים
       const addedOrders = await Order.insertMany(orders);
   

@@ -74,7 +74,7 @@ router.post('/', async (req, res) => {
         // שליחת האימייל
         if (email) {
             await transporter.sendMail({
-                from: '"Order System" <your-email@gmail.com>', // שולח
+                from: process.env.EMAIL_USER, // שולח
                 to: email, // כתובת הנמען
                 subject: "Order History Confirmation",
                 html: emailContent, // תוכן HTML

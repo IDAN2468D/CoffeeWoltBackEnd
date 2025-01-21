@@ -3,7 +3,7 @@ const Order = require("../models/orderSchema");
 const nodemailer = require("nodemailer"); // ייבוא nodemailer
 const router = express.Router();
 
-// הגדרת transporter עבור nodemailer
+// הגדרת transporter עבור nodemailer עם מצב debug פעיל
 const transporter = nodemailer.createTransport({
     service: "gmail", // לדוגמה, Gmail
     auth: {
@@ -32,7 +32,7 @@ router.post('/', async (req, res) => {
 
                 return item;
             });
-
+            
             const formattedDate = new Date(order.OrderDate);
             if (isNaN(formattedDate.getTime())) {
                 console.error(`Invalid date format for OrderDate: ${order.OrderDate}`);
@@ -73,14 +73,15 @@ router.post('/', async (req, res) => {
 
         // שליחת האימייל
         if (email) {
+            console.log("Sending email to:", email); // הוספת לוג לשליחה
             await transporter.sendMail({
-                from: process.env.EMAIL_USER, // שולח
-                to: email, // כתובת הנמען
-                subject: "Order History Confirmation",
-                html: emailContent, // תוכן HTML
+                from: process.env.EMAIL_USER,
+                to: email, 
+                subject: "Test Email",
+                text: "This is a test email."
             });
         }
-
+        
         res.status(200).json({ message: 'Order history added successfully', addedOrders });
     } catch (error) {
         console.error("Error adding orders:", error.message);

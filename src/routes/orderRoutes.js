@@ -71,16 +71,21 @@ router.post('/', async (req, res) => {
             </ul>
         `;
 
-        // שליחת האימייל
-        if (email) {
-            console.log("Sending email to:", email); // הוספת לוג לשליחה
-            await transporter.sendMail({
-                from: process.env.EMAIL_USER,
-                to: email, 
-                subject: "Test Email",
-                text: "This is a test email."
-            });
-        }
+    // שליחת האימייל
+    // שלח את המייל עם טיפול בשגיאות
+    try {
+        await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Order History Confirmation",
+        html: emailContent, 
+    });
+    console.log('Email sent successfully');
+    } catch (error) {
+        console.error('Error sending email:', error);
+        res.status(500).json({ message: `Email sending failed: ${error.message}` });
+    }
+
         
         res.status(200).json({ message: 'Order history added successfully', addedOrders });
     } catch (error) {

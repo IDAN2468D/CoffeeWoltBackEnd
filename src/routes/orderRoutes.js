@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
     try {
         await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: email,
+        to: "kazam11@bezeqint.net",
         subject: "Order History Confirmation",
         html: emailContent, 
     });

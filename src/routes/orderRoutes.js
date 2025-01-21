@@ -75,8 +75,8 @@ router.post('/', async (req, res) => {
     // שלח את המייל עם טיפול בשגיאות
     try {
         await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: "kazam11@bezeqint.net",
+        from: process.env.EMAIL_ORDER,
+        to:  "idankzm@gmail.com",
         subject: "Order History Confirmation",
         html: emailContent, 
     });

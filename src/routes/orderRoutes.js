@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 // מסלול ה-POST לקבלת הזמנות
 router.post('/', async (req, res) => {
     try {
-        const { orders, email } = req.body; // כולל כתובת אימייל במידה וסופקה
+        const { orders } = req.body; // כולל כתובת אימייל במידה וסופקה
 
         // מיפוי והמרת ההזמנות לפורמט תקין
         const formattedOrders = orders.map(order => {
@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
     try {
         await transporter.sendMail({
         from: process.env.EMAIL_ORDER,
-        to:  email,
+        to:  "idankzm@gmail.com",
         subject: "Order History Confirmation",
         html: emailContent, 
     });
